@@ -43,11 +43,12 @@ def repo(base_url):
 		for repo in RepoList:
 			try:
 				str1=repo.find('a').attrs['href']
-				try:
-					str2=repo.find('span').text.strip()
-					ansArr.append(str1+' '+str2+' \n')
-				except:
-					ansArr.append(str1+'\n')
+				ansArr.append('Repo name :\t'+str1)
+				# try:
+				# 	str2=repo.find('span').text.strip()
+				# 	ansArr.append(str1+' '+str2+' \n')
+				# except:
+				# 	ansArr.append(str1+'\n')
 			except Exception as e:
 				continue
 		pageNo+=1
@@ -101,30 +102,33 @@ def followers(base_url):
 		print str(ansArr.index(i)+1)+'.',i	
 	a=raw_input()
 
-user=raw_input('name of user: ') 
-
 while True:
-	os.system('clear')
-
-# user='pratyush1687'
-	print '''choose the option no:
-		1.repositories
-		2.stars
-		3.Followers
-		4.following
-		press any other key for exit:P
-	''' 
-	a=raw_input()
-
-	#if tab chosen ==e following
-	if a=='4':
-		following(base_url)
-	elif a=='1':
-		repo(base_url)
-	elif a=='2':
-		stars(base_url)
-	elif a=='3':
-		followers(base_url)	
-	else:
-		print 'please enter a valid choice'
+	user=raw_input('name of user(leave blank to exit): ') 
+	if user=='':
 		break
+	while True:
+		os.system('clear')
+
+	# user='pratyush1687'
+		print '''choose the option no:
+			1.repositories
+			2.stars
+			3.Followers
+			4.following
+			press any other key to reenter user:P
+		''' 
+		a=raw_input()
+
+		#if tab chosen ==e following
+		if a=='4':
+			following(base_url)
+		elif a=='1':
+			repo(base_url)
+		elif a=='2':
+			stars(base_url)
+		elif a=='3':
+			followers(base_url)	
+		else:
+			print 'please enter a valid choice'
+			break
+	
