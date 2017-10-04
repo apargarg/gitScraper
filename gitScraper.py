@@ -5,59 +5,107 @@ import os
 
 base_url='https://www.github.com/'
 def following(base_url):
-	tab='?tab=following' #implement other tabs
-	url=base_url+user+tab
-	soup=bs(requests.get(url).text,'html.parser')
-	FollowReqlist=soup.findAll('a',{'class':'d-inline-block'})
+	pageNo=1
+	print 'loading...'
+	FollowReqlist=[0]
+	ansArr=[]
+	while len(FollowReqlist)>0:
+		tab='?page='+str(pageNo)+'&tab=following' #implement other tabs
+		url=base_url+user+tab
+		getResult=requests.get(url)
+		soup=bs(getResult.text,'html.parser')
+		FollowReqlist=soup.findAll('a',{'class':'d-inline-block'})
+		# print len(FollowReqlist)
+		for i in FollowReqlist:
+			ansArr.append('id: '+i.attrs['href'][1:]+',\tname: '+i.find('span').text)
+		pageNo+=1
+	os.system('clear')
 	print 'github id of ppl followed by enter user are:'
-	for i in FollowReqlist:
-		print 'id:',i.attrs['href'][1:],',name:',i.find('span').text
+	for i in ansArr:
+		print str(ansArr.index(i)+1)+'.',i
 	a=raw_input()
+
 
 
 def repo(base_url):
-	tab='?tab=repositories' #implement other tabs
-	url=base_url+user+tab
-	soup=bs(requests.get(url).text,'html.parser')
-	RepoList=soup.findAll('div',{'class':'d-inline-block'})
-	print "repositories of the entered user are:"
-	for repo in RepoList:
-		try:
-			str1=repo.find('a').attrs['href']
+	pageNo=1
+	print 'loading...'
+	Repolist=[0]
+	ansArr=[]
+	while len(Repolist)>0:
+		tab='?page='+str(pageNo)+'&tab=repositories' #implement other tabs
+		url=base_url+user+tab
+		soup=bs(requests.get(url).text,'html.parser')
+		if soup.find('div',{'class':'blankslate'}):
+			# print 'breaking'
+			break
+		RepoList=soup.findAll('div',{'class':'d-inline-block'})
+		for repo in RepoList:
 			try:
-				str2=repo.find('span').text.strip()
-				print str1,str2,'\n'
-			except:
-				print str1+'\n'
-		except Exception as e:
-			continue
+				str1=repo.find('a').attrs['href']
+				try:
+					str2=repo.find('span').text.strip()
+					ansArr.append(str1+' '+str2+' \n')
+				except:
+					ansArr.append(str1+'\n')
+			except Exception as e:
+				continue
+		pageNo+=1
+
+	os.system('clear')
+	print "repositories of the entered user are:"
+	for i in ansArr:
+		print str(ansArr.index(i)+1)+'.',i
 	a=raw_input()
 
 def stars(base_url):
-	tab='?tab=stars'
-	url=base_url+user+tab
-	soup=bs(requests.get(url).text,'html.parser')
-	StarList=soup.findAll('div',{'class':'d-inline-block'})
+	pageNo=1
+	print 'loading...'
+	StarList=[0]
+	ansArr=[]
+	while len(StarList)>0:
+		tab='?page='+str(pageNo)+'&tab=stars'
+		url=base_url+user+tab
+		soup=bs(requests.get(url).text,'html.parser')
+		if soup.find('div',{'class':'blankslate'}):
+			print 'breaking'
+			break
+		StarList=soup.findAll('div',{'class':'d-inline-block'})
+		for i in StarList:
+			str1=i.find('a').attrs['href']
+			if str1[0]=='/':
+				ansArr.append('https://github.com'+str1)
+		pageNo+=1
+	os.system('clear')
 	print 'the repositories starred by user are :'
-	for i in StarList:
-		str1=i.find('a').attrs['href']
-		if str1[0]=='/':
-			print 'https://github.com'+str1
+	for i in ansArr:
+		print str(ansArr.index(i)+1)+'.',i
 	a=raw_input()
 
 def followers(base_url):
-	tab='?tab=followers' #implement other tabs
-	url=base_url+user+tab
-	soup=bs(requests.get(url).text,'html.parser')
-	FollowReqlist=soup.findAll('a',{'class':'d-inline-block'})
+	pageNo=1
+	print 'loading...'
+	FollowReqlist=[0]
+	ansArr=[]
+	while len(FollowReqlist)>0:
+		tab='?page='+str(pageNo)+'&tab=followers' 
+		url=base_url+user+tab
+		soup=bs(requests.get(url).text,'html.parser')
+		FollowReqlist=soup.findAll('a',{'class':'d-inline-block'})
+		for i in FollowReqlist:
+			ansArr.append('id: '+i.attrs['href'][1:]+',\tname: '+i.find('span').text)
+		pageNo+=1
+	os.system('clear')
 	print 'github id of ppl following the user are:'
-	for i in FollowReqlist:
-		print 'id:',i.attrs['href'][1:],',name:',i.find('span').text
+	for i in ansArr:
+		print str(ansArr.index(i)+1)+'.',i	
 	a=raw_input()
+
+user=raw_input('name of user: ') 
 
 while True:
 	os.system('clear')
-	user=raw_input('name of user')
+
 # user='pratyush1687'
 	print '''choose the option no:
 		1.repositories
@@ -66,16 +114,16 @@ while True:
 		4.following
 		press any other key for exit:P
 	''' 
-	a=input()
+	a=raw_input()
 
-	#if tab chosen ==following
-	if a==4:
+	#if tab chosen ==e following
+	if a=='4':
 		following(base_url)
-	elif a==1:
+	elif a=='1':
 		repo(base_url)
-	elif a==2:
+	elif a=='2':
 		stars(base_url)
-	elif a==3:
+	elif a=='3':
 		followers(base_url)	
 	else:
 		print 'please enter a valid choice'
